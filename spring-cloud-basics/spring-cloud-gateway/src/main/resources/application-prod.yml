@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: spring-cloud-gateway
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 20000
+
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    spring-cloud-basics-backend-hello:
+        path: /api/hello
+        url: http://spring-cloud-basics-backend-hello:7070
+        stripPrefix: false
+        sensitiveHeaders:
+    spring-cloud-basics-backend-goodbye:
+        path: /api/goodbye
+        url: http://spring-cloud-basics-backend-goodbye:7000
+        stripPrefix: false
+        sensitiveHeaders:
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.security: INFO
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://service-cloud-registry:8761/eureka/

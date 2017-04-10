@@ -1,0 +1,62 @@
+version: '3'
+services:
+
+  spring-cloud-basics-backend-hello:
+    image: devplant/spring-cloud-basics-backend-hello
+    restart: always
+    depends_on:
+      - spring-cloud-gateway
+      - spring-cloud-registry
+    ports:
+      - 7070:7070
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+
+  spring-cloud-basics-backend-goodbye:
+    image: devplant/spring-cloud-basics-backend-goodbye
+    restart: always
+    depends_on:
+      - spring-cloud-gateway
+      - spring-cloud-registry
+    ports:
+      - 7000:7000
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+
+  spring-cloud-registry:
+    image: devplant/spring-cloud-registry
+    restart: always
+    ports:
+      - 8761:8761
+
+  spring-cloud-gateway:
+    image: devplant/spring-cloud-gateway
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - VIRTUAL_HOST=*/api/*
+      - VIRTUAL_HOST_WEIGHT=1
+
+  spring-cloud-basics-webapp:
+    image: devplant/spring-cloud-basics-webapp
+    restart: always
+    ports:
+      - 8090:80
+    environment:
+      - VIRTUAL_HOST=*
+      - VIRTUAL_HOST_WEIGHT=0
+
+  proxy:
+    image: dockercloud/haproxy
+    links:
+      - spring-cloud-gateway
+      - spring-cloud-basics-webapp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80

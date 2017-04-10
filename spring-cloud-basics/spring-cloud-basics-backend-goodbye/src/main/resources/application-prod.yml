@@ -1,0 +1,21 @@
+grettings:
+  goodbye-message: 'See ya, friend!'
+
+server:
+  port: 7000
+spring:
+  profiles:
+    active: prod
+  application:
+    name: spring-cloud-basics-backend-goodbye
+
+logging:
+  level:
+    org.springframework.security: INFO
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://spring-cloud-registry:8761/eureka/
